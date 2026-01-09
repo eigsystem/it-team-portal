@@ -2,184 +2,199 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>IT Team Portal</title>
+    <title>EIG Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Simple clean dashboard layout -->
+    <!-- Teams SDK -->
+    <script src="https://res.cdn.office.net/teams-js/2.19.0/js/MicrosoftTeams.min.js"></script>
+
     <style>
-    :root {
-        --bg: #0f172a;
-        --card: #111827;
-        --accent: #6366f1;
-        --text: #e5e7eb;
-        --muted: #9ca3af;
-    }
+        /* ===== THEME VARIABLES ===== */
+        :root {
+            --bg: #ffffff;
+            --card: #f3f4f6;
+            --accent: #6366f1;
+            --text: #111827;
+            --muted: #6b7280;
+        }
 
-    * {
-        box-sizing: border-box;
-    }
+        :root[data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #111827;
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+        }
 
-    body {
-        margin: 0;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-        background: radial-gradient(circle at top, #1e293b, #020617);
-        color: var(--text);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-    }
+        :root[data-theme="contrast"] {
+            --bg: #000000;
+            --card: #000000;
+            --text: #ffffff;
+            --muted: #ffffff;
+        }
 
-    .container {
-        width: 100%;
-        max-width: 1100px;
-        padding: 32px 20px 48px;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    header {
-        margin-bottom: 32px;
-    }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
 
-    h1 {
-        font-size: 2.2rem;
-        margin: 0 0 8px;
-    }
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 32px 20px 48px;
+        }
 
-    .subtitle {
-        color: var(--muted);
-    }
+        header {
+            margin-bottom: 32px;
+        }
 
-    /* GRID LOGIC */
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-    }
+        h1 {
+            font-size: 2.2rem;
+            margin: 0 0 8px;
+        }
 
-    /* 1 card → full width */
-    .grid > .card:only-child {
-        grid-column: 1 / -1;
-    }
+        .subtitle {
+            color: var(--muted);
+        }
 
-    /* 2 cards → 50 / 50 */
-    .grid > .card:nth-child(1):nth-last-child(2),
-    .grid > .card:nth-child(2):nth-last-child(1) {
-        grid-column: span 1;
-    }
+        /* ===== GRID LOGIC ===== */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
 
-    /* 4th card and далее → new row, full width */
-    .grid > .card:nth-child(n+4) {
-        grid-column: 1 / -1;
-    }
+        .grid > .card:only-child {
+            grid-column: 1 / -1;
+        }
 
-    .card {
-        background: linear-gradient(180deg, #0b1220, #020617);
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
+        .grid > .card:nth-child(n+4) {
+            grid-column: 1 / -1;
+        }
 
-    .card h2 {
-        margin: 0 0 8px;
-        font-size: 1.25rem;
-    }
+        /* ===== CARD ===== */
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-    .card p {
-        margin: 0 0 20px;
-        color: var(--muted);
-        line-height: 1.5;
-        flex-grow: 1;
-    }
+        :root[data-theme="dark"] .card {
+            background: linear-gradient(180deg, #0b1220, #020617);
+        }
 
-    .card a {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        .card h2 {
+            margin: 0 0 8px;
+            font-size: 1.25rem;
+        }
 
-        width: 220px;          /* фиксированная ширина кнопки */
-        max-width: 100%;
+        .card p {
+            margin: 0 0 20px;
+            color: var(--muted);
+            line-height: 1.5;
+            flex-grow: 1;
+        }
 
-        padding: 12px 0;
-        margin: 0 auto;        /* центрирование в карточке */
+        .card a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 220px;
+            padding: 12px 0;
+            margin: 0 auto;
+            border-radius: 999px;
+            text-decoration: none;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--accent), #4f46e5);
+            font-weight: 600;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
 
-        border-radius: 999px;
-        text-decoration: none;
-        color: #fff;
-
-        background: linear-gradient(135deg, var(--accent), #4f46e5);
-        font-weight: 600;
-
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .card a:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 30px rgba(99,102,241,0.45);
-    }
-</style>
-
+        .card a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(99,102,241,0.45);
+        }
+    </style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>EIG Portal</h1>
-            <div class="subtitle">
-                Centralized access to internal EI Group systems
-            </div>
-        </header>
+<div class="container">
+    <header>
+        <h1>EIG Portal</h1>
+        <div class="subtitle">
+            Centralized access to internal EI Group systems
+        </div>
+    </header>
 
-        <section class="grid">
+    <section class="grid">
 
-            <div class="card">
-                <h2>EI-G Service Desk</h2>
-                <p>
-                    Submit and track IT support requests, incidents and service tickets.
-                </p>
-                <a href="https://ticket.myit.az" target="_blank" rel="noopener noreferrer">
-                    Open Service Desk
-                </a>
-            </div>
+        <div class="card">
+            <h2>EI-G Service Desk</h2>
+            <p>Submit and track IT support requests, incidents and service tickets.</p>
+            <a href="https://ticket.myit.az" target="_blank" rel="noopener noreferrer">
+                Open Service Desk
+            </a>
+        </div>
 
-            <div class="card">
-                <h2>Wizer Trainings</h2>
-                <p>
-                    Security awareness and InfoSec training platform for employees.
-                </p>
-                <a href="https://app.wizer-training.com/home/learning"
-                   target="_blank" rel="noopener noreferrer">
-                    Open Trainings
-                </a>
-            </div>
+        <div class="card">
+            <h2>Wizer Trainings</h2>
+            <p>Security awareness and InfoSec training platform for employees.</p>
+            <a href="https://app.wizer-training.com/home/learning"
+               target="_blank" rel="noopener noreferrer">
+                Open Trainings
+            </a>
+        </div>
 
-            <div class="card">
-                <h2>Inventory System</h2>
-                <p>
-                    IT and office assets Inventory management system.
-                </p>
-                <a href="https://inventory.myit.az"
-                   target="_blank" rel="noopener noreferrer">
-                    Open Inventory
-                </a>
-            </div>
+        <div class="card">
+            <h2>Inventory System</h2>
+            <p>IT and office assets inventory management system.</p>
+            <a href="https://inventory.myit.az"
+               target="_blank" rel="noopener noreferrer">
+                Open Inventory
+            </a>
+        </div>
 
+        <div class="card">
+            <h2>Paid Time Off</h2>
+            <p>
+                Manage your paid leave, view how many days you have accumulated,
+                and see who is currently on vacation.
+            </p>
+            <a href="https://pto.ei-g.dev/profile"
+               target="_blank" rel="noopener noreferrer">
+                Open PTO
+            </a>
+        </div>
 
-            <div class="card">
-                <h2>Paid Time Off</h2>
-                <p>
-                    Manage your paid leave, view how many days you have accumulated,
-                    and see who is currently on vacation.
-                </p>
-                <a href="https://pto.ei-g.dev/profile"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Open PTO
-                </a>
-            </div>
+    </section>
+</div>
 
+<script>
+    microsoftTeams.app.initialize().then(() => {
+        microsoftTeams.app.getContext().then(context => {
+            setTheme(context.app.theme || "default");
+        });
 
-        </section>
-    </div>
+        microsoftTeams.app.registerOnThemeChangeHandler(theme => {
+            setTheme(theme || "default");
+        });
+    });
+
+    function setTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+    }
+</script>
 </body>
 </html>
